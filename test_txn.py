@@ -22,13 +22,15 @@ class B(ModelSQL, ModelView):
 
     @classmethod
     def txn(cls):
-        b, = Pool().get('test.b').search([])
+        B = Pool().get('test.b');
+        b, = B.search([])
         with Transaction().new_transaction(autocommit=False, readonly=False) as transaction:
+            b1 = B(b.id)
             A = Pool().get("test.a")
             a = A(name=b.name)
             a.save()
-            b.ref_a = a
-            b.save()
+            b1.ref_a = a
+            b1.save()
             transaction.commit()
         
 
